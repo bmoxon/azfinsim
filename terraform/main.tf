@@ -1,13 +1,14 @@
 # Configure the Azure & Azure AD provider
+# bcm ToDo: see if these should be updated
 terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 2.4.3"
+      version = "= 2.43"
     }
     azuread = {
       source  = "hashicorp/azuread"
-      version = ">= 1.2.1"
+      version = "= 1.2.1"
     }
   }
 }

@@ -16,4 +16,6 @@ AZFINSIM_REDIS_KEY=$(az keyvault secret show --name $AZFINSIM_REDIS_SECRET_ID --
 
 #-- inject 
 echo "Injecting 1 million trades into cache $AZFINSIM_REDISHOST:6379"
-time zcat ../data/trades.gz | redis-cli -h $AZFINSIM_REDISHOST -p 6379 -a $AZFINSIM_REDIS_KEY --pipe
+#time zcat ../data/trades.gz | redis-cli -h $AZFINSIM_REDISHOST -p 6379 -a $AZFINSIM_REDIS_KEY --pipe
+# osx
+time cat ../data/trades.gz | zcat | redis-cli -h $AZFINSIM_REDISHOST -p 6379 -a $AZFINSIM_REDIS_KEY --pipe

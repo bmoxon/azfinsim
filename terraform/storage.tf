@@ -25,8 +25,8 @@ data "azurerm_storage_account_blob_container_sas" "azfinsim" {
 
   #ip_address = "X.X.X.X"
 
-  start  = "2021-01-01"
-  expiry = "2025-01-01"
+  start  = formatdate("YYYY-MM-DD", timestamp())
+  expiry = formatdate("YYYY-MM-DD", timeadd(timestamp(), "730h"))
 
   permissions {
     read   = true

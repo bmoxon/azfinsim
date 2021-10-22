@@ -12,6 +12,8 @@ resource "azurerm_subnet" "azfinsim" {
   virtual_network_name= azurerm_virtual_network.azfinsim.name
   address_prefixes    = var.compute_subnet
 }
+
+# bcm ToDo: can i optionally include based on variable value?
 #resource "azurerm_public_ip" "azfinsim" {
 #  name                = format("%s-pubip", var.prefix)
 #  location            = azurerm_resource_group.azfinsim.location

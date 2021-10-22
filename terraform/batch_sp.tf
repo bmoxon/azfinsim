@@ -4,6 +4,8 @@ data "external" "batchservice" {
   program = ["az", "ad", "sp", "show", "--id", "MicrosoftAzureBatch", "--query", "{objectId:objectId}"]
 }
 
+#-- bcm ToDo: conditional resource definition or explicit prerequisite script to set up services
+
 #-- This section is needed if your subscription is not setup for Azure Batch already
 #-- Resource Provider Registration
 #-- https://docs.microsoft.com/en-us/azure/batch/batch-account-create-portal#allow-azure-batch-to-access-the-subscription-one-time-operation

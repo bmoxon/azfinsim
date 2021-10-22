@@ -42,7 +42,7 @@ resource "azurerm_batch_pool" "autoscale" {
 
     formula = <<EOF
       startingNumberOfVMs = 0;
-      maxNumberofVMs = 200;
+      maxNumberofVMs = 10;
       pendingTaskSamplePercent = $PendingTasks.GetSamplePercent(180 * TimeInterval_Second);
       pendingTaskSamples = pendingTaskSamplePercent < 70 ? startingNumberOfVMs : avg($PendingTasks.GetSample(180 *   TimeInterval_Second));
       $TargetDedicatedNodes=min(maxNumberofVMs, pendingTaskSamples);
