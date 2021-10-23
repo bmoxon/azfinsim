@@ -1,13 +1,13 @@
 #-- name of the application (resource names will all be prefixed with this string)
 variable "prefix" {
-  default = "bcmazfs"
+  default = "azfinsim"
   description = "Prefix to use for selected resources."
   type = string
 }
 
 variable "location" {
   description = "The Azure Region in which all resources in this example should be created."
-  default = "westus2"
+  default = "westeurope"
 #  type = list(string)
   type = string
 }
