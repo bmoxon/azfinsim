@@ -24,7 +24,7 @@ resource "azurerm_key_vault" "azfinsim" {
       "set",
       "list",
       "delete",
-      "purge"
+      "purge",
     ]
     storage_permissions = [
     ]
@@ -42,7 +42,7 @@ resource "azurerm_key_vault" "azfinsim" {
       "set",
       "list",
       "delete",
-      "purge"
+      "purge",
     ]
   }
   #-- delegate access to Microsoft Azure Batch service
@@ -56,7 +56,8 @@ resource "azurerm_key_vault" "azfinsim" {
       "get",
       "set",
       "list",
-      "delete"
+      "delete",
+      "recover",
     ]
   }
   tags = local.resource_tags

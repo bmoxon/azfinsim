@@ -30,7 +30,7 @@ resource "azurerm_batch_pool" "autoscale" {
   display_name        = "AzFinSim Batch Pool"
   vm_size             = var.vm_size
   max_tasks_per_node  = var.max_tasks_per_node
-  node_agent_sku_id   = "batch.node.ubuntu 16.04"
+  node_agent_sku_id   = "batch.node.ubuntu 20.04"
   
   network_configuration {
     subnet_id         = azurerm_subnet.azfinsim.id
@@ -54,7 +54,7 @@ EOF
   storage_image_reference {
     publisher = "microsoft-azure-batch"
     offer     = "ubuntu-server-container"
-    sku       = "16-04-lts"
+    sku       = "20-04-lts"
     version   = "latest"
   }
 
@@ -101,7 +101,7 @@ resource "azurerm_batch_pool" "realtimestatic" {
   display_name        = "AzFinSim Realtime Pool"
   vm_size             = var.vm_size
   max_tasks_per_node  = var.max_tasks_per_node
-  node_agent_sku_id   = "batch.node.ubuntu 16.04"
+  node_agent_sku_id   = "batch.node.ubuntu 20.04"
 
   fixed_scale {
     target_dedicated_nodes    = 0
@@ -112,7 +112,7 @@ resource "azurerm_batch_pool" "realtimestatic" {
   storage_image_reference {
     publisher = "microsoft-azure-batch"
     offer     = "ubuntu-server-container"
-    sku       = "16-04-lts"
+    sku       = "20-04-lts"
     version   = "latest"
   }
 
