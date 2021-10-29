@@ -1,7 +1,8 @@
 #-- Add secrets to keyvault 
 resource "azurerm_key_vault_secret" "redis" {
+  #count        = local.dbg-noredis ? 0 : 1
   name         = format("AzFinSimRedisKey-%s", random_string.suffix.result)
-  value        = azurerm_redis_cache.azfinsim.primary_access_key
+  value        = local.dbg-noredis ? "noredis-secret" : azurerm_redis_cache.azfinsim[0].primary_access_key
   key_vault_id = azurerm_key_vault.azfinsim.id
 }
 resource "azurerm_key_vault_secret" "storage" {

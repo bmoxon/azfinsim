@@ -11,7 +11,10 @@ resource "azurerm_subnet" "azfinsim" {
   resource_group_name = azurerm_resource_group.azfinsim.name
   virtual_network_name= azurerm_virtual_network.azfinsim.name
   address_prefixes    = var.compute_subnet
+  enforce_private_link_endpoint_network_policies = true
 }
+
+# ToDo: maybe want to conditionally deploy based on variable (?)
 #resource "azurerm_public_ip" "azfinsim" {
 #  name                = format("%s-pubip", var.prefix)
 #  location            = azurerm_resource_group.azfinsim.location

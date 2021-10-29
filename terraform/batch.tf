@@ -12,7 +12,6 @@ resource "azurerm_batch_account" "azfinsim" {
   name                 = format("%sbatch", var.prefix)
   resource_group_name  = azurerm_resource_group.azfinsim.name
   location             = azurerm_resource_group.azfinsim.location
-#  pool_allocation_mode = "BatchService"
   pool_allocation_mode = "UserSubscription"
   storage_account_id   = azurerm_storage_account.azfinsim.id
   key_vault_reference {
