@@ -83,6 +83,8 @@ resource "azurerm_private_endpoint" "azfinsim-kv" {
     name                           = "azfinsim-keyvault-privateserviceconnection"
     private_connection_resource_id = azurerm_key_vault.azfinsim.id
     is_manual_connection           = false
-    subresource_names              = ["vaultcore"]
+    # bcm azuread > 2.0
+    #subresource_names              = ["vaultcore"]
+    subresource_names              = ["vault"]
   }
 }

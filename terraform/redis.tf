@@ -41,17 +41,35 @@ resource "azurerm_redis_cache" "azfinsim" {
   # (Optional) Specify `storage_account_name` to save monitoring logs to storage. 
   # log_analytics_workspace_name = "loganalytics-we-sharedtest2"
 
+# See
+# https://docs.microsoft.com/en-us/azure/private-link/private-endpoint-overview
+# for info on PL resource name, resourct type, subresources
+
+#resource "azurerm_private_endpoint" "azfinsim-redis" {
+#  name                = "azfinsim-redis-ep"
+#  location            = azurerm_resource_group.azfinsim.location
+#  resource_group_name = azurerm_resource_group.azfinsim.name
+#  subnet_id           = azurerm_subnet.infra.id
+#
+#  private_service_connection {
+#    name                           = "azfinsim-redis-privateserviceconnection"
+#    private_connection_resource_id = local.dbg-noredis ? null : azurerm_redis_cache.azfinsim[0].id
+#    is_manual_connection           = false
+#    subresource_names              = ["cache"]
+#  }
+#}
 
 resource "azurerm_private_endpoint" "azfinsim-redis" {
   name                = "azfinsim-redis-ep"
-  location            = azurerm_resource_group.azfinsim.location
-  resource_group_name = azurerm_resource_group.azfinsim.name
   subnet_id           = azurerm_subnet.infra.id
 
   private_service_connection {
-    name                           = "azfinsim-redis-privateserviceconnection"
-    private_connection_resource_id = local.dbg-noredis ? null : azurerm_redis_cache.azfinsim[0].id
-    is_manual_connection           = false
-    subresource_names              = ["cache"]
+    name                              = "azfinsim-redis-privateserviceconnection"
+    #private_connection_resource_alias = "azfinsim-privatelinkservice.d20286c8-4ea5-11eb-9584-8f53157226c6.centralus.azure.privatelinkservice"
+    private_connection_resource_id    = "/subscriptions/f5a67d06-2d09-4090-91cc-e3298907a021/providers/Microsoft.Network/AvailablePrivateEndpointTypes/Microsoft.Cache.Redis"
+    is_manual_connection              = true
+    request_message                   = "PL"
+    #connection_name                   = "azfinsim-redis-conn"
   }
+
 }

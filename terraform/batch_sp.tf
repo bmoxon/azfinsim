@@ -35,7 +35,7 @@ resource "azuread_application" "azfinsim" {
 resource "azuread_service_principal" "azfinsim" {
   application_id                  = azuread_application.azfinsim.application_id
   app_role_assignment_required    = false
-  owners                       = [data.azuread_client_config.current.object_id]
+  #owners                       = [data.azuread_client_config.current.object_id]
 }
 
 resource "azuread_service_principal_password" "azfinsim" {
