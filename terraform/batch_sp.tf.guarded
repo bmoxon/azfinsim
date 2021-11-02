@@ -8,17 +8,16 @@ data "external" "batchservice" {
 #-- Resource Provider Registration
 #-- https://docs.microsoft.com/en-us/azure/batch/batch-account-create-portal#allow-azure-batch-to-access-the-subscription-one-time-operation
 
-#resource "azurerm_resource_provider_registration" "batchservice" {
-#  name = "Microsoft.Batch"
-#}
-
+resource "azurerm_resource_provider_registration" "batchservice" {
+  name = "Microsoft.Batch"
+}
 #-- Create Role Assignment to allow Azure Batch Service to access the subscription
-#resource "azurerm_role_assignment" "batchservice" {
-#  scope                = data.azurerm_subscription.current.id
-#  role_definition_name = "Contributor"
-#  principal_id         = data.external.batchservice.result.objectId
-#  #principal_id         = azurerm_resource_provider_registration.batchservice.result.objectId
-#}
+resource "azurerm_role_assignment" "batchservice" {
+  name                 = "00000000-0000-0000-0000-000000000000"
+  scope                = data.azurerm_subscription.current.id
+  role_definition_name = "Contributor"
+  principal_id         = data.external.batchservice.result.objectId
+}
 
 data "azuread_client_config" "current" {}
 
@@ -30,21 +29,101 @@ resource "azuread_application" "azfinsim" {
   }
   owners                     = [data.azuread_client_config.current.object_id]
   fallback_public_client_enabled = true
+
+  api {
+    mapped_claims_enabled          = true
+    requested_access_token_version = 2
+
+    #known_client_applications = [
+    #  azuread_application.known1.application_id,
+    #  azuread_application.known2.application_id,
+    #]
+  
+    oauth2_permission_scope {
+      admin_consent_description  = "Allow the application to access example on behalf of the signed-in user."
+      admin_consent_display_name = "Access azfinsim"
+      enabled                    = true
+      id                         = "96183846-204b-4b43-82e1-5d2222eb4b9b"
+      type                       = "User"
+      user_consent_description   = "Allow the application to access azfinsim on your behalf."
+      user_consent_display_name  = "Access azfinsim"
+      value                      = "user_impersonation"
+    }
+
+    oauth2_permission_scope {
+      admin_consent_description  = "Administer the azfinsim application"
+      admin_consent_display_name = "Administer"
+      enabled                    = true
+      id                         = "be98fa3e-ab5b-4b11-83d9-04ba2b7946bc"
+      type                       = "Admin"
+      value                      = "administer"
+    }
+  }
+
+  app_role {
+    allowed_member_types = ["User", "Application"]
+    description          = "Admins can manage roles and perform all task actions"
+    display_name         = "Admin"
+    enabled              = true
+    id                   = "1b19509b-32b1-4e9f-b71d-4992aa991967"
+    value                = "admin"
+  }
+
+  app_role {
+    allowed_member_types = ["User"]
+    description          = "ReadOnly roles have limited query access"
+    display_name         = "ReadOnly"
+    enabled              = true
+    id                   = "497406e4-012a-4267-bf18-45a1cb148a01"
+    value                = "User"
+  }
+
+  required_resource_access {
+    resource_app_id = "00000003-0000-0000-c000-000000000000" # Microsoft Graph
+
+    resource_access {
+      id   = "df021288-bdef-4463-88db-98f22de89214" # User.Read.All
+      type = "Role"
+    }
+
+    resource_access {
+      id   = "b4e74841-8e56-480b-be8b-910348b18b4c" # User.ReadWrite
+      type = "Scope"
+    }
+  }
+
+  required_resource_access {
+    resource_app_id = "00000003-0000-0000-c000-000000000000" # Microsoft Graph
+
+    resource_access {
+      id   = "df021288-bdef-4463-88db-98f22de89214" # User.Read.All
+      type = "Role"
+    }
+
+    resource_access {
+      id   = "b4e74841-8e56-480b-be8b-910348b18b4c" # User.ReadWrite
+      type = "Scope"
+    }
+  }
+#/bcm
 }
 
-resource "azuread_service_principal" "azfinsim" {
-  application_id                  = azuread_application.azfinsim.application_id
+resource "azuread_service_principal_password" "example" {
+  service_principal_id = azuread_service_principal.example.object_id
   app_role_assignment_required    = false
-  owners                       = [data.azuread_client_config.current.object_id]
-}
-
-resource "azuread_service_principal_password" "azfinsim" {
-  service_principal_id = azuread_service_principal.azfinsim.object_id
 
   lifecycle {
     ignore_changes = [value, end_date]
   }
 }
+
+resource "azuread_service_principal" "azfinsim" {
+  application_id                  = azuread_application.azfinsim.application_id
+  app_role_assignment_required    = false
+  #tags                           = local.resource_tags
+}
+
+
 
 #-- RBAC custom role definition for service principal
 #-- https://docs.microsoft.com/en-us/azure/batch/batch-aad-auth#use-integrated-authentication

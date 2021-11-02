@@ -9,6 +9,6 @@ resource "azurerm_dashboard" "azfinsim" {
   {
       video_link        = "https://youtu.be/r5jxlwJQEPc",
       provider_path     = format("/subscriptions/%s/resourceGroups/%s/providers", data.azurerm_subscription.current.subscription_id, azurerm_resource_group.azfinsim.name)
-      cache_name        = format("%s",azurerm_redis_cache.azfinsim.name)
+      cache_name        = format("%s", local.dbg-noredis ? "nocache" : azurerm_redis_cache.azfinsim[0].name)
   })
 }

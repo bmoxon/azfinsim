@@ -16,6 +16,10 @@ provider "azurerm" {
   features {}
 }
 
+#provider "azuread" {
+#    use_microsoft_graph = true
+#}
+
 #-- Resource Group
 resource "azurerm_resource_group" "azfinsim" {
   name     = format("%srg", var.prefix)

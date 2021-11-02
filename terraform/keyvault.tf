@@ -12,6 +12,9 @@ resource "azurerm_key_vault" "azfinsim" {
   soft_delete_retention_days          = 7
   purge_protection_enabled            = false
 
+#  enforce_private_link_endpoint_network_policies = true
+#  enforce_private_link_service_network_policies = true
+
   #-- bug in cloudshell makes client_config.object_id blank, so use the one we queried from the cli
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
@@ -61,4 +64,25 @@ resource "azurerm_key_vault" "azfinsim" {
     ]
   }
   tags = local.resource_tags
+}
+
+# private endpoint
+# had to work through errors, add subresource_names
+# https://github.com/hashicorp/terraform-provider-azurerm/issues/9058
+# and this (using vaultcore)
+# https://github.com/hashicorp/terraform-provider-azurerm/issues/10501
+# (maybe need both?)
+
+resource "azurerm_private_endpoint" "azfinsim-kv" {
+  name                = "azfinsim-keyvault-ep"
+  location            = azurerm_resource_group.azfinsim.location
+  resource_group_name = azurerm_resource_group.azfinsim.name
+  subnet_id           = azurerm_subnet.infra.id
+
+  private_service_connection {
+    name                           = "azfinsim-keyvault-privateserviceconnection"
+    private_connection_resource_id = azurerm_key_vault.azfinsim.id
+    is_manual_connection           = false
+    subresource_names              = ["vaultcore"]
+  }
 }

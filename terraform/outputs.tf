@@ -14,7 +14,7 @@ output "application_id" {
   sensitive = false
 }
 output "sp_name" {
-  value = azuread_application.azfinsim.name
+  value = azuread_application.azfinsim.display_name
   sensitive = false
 }
 output "sp_password" {
@@ -70,11 +70,11 @@ output "azcr_server" {
 
 #-- redis 
 output "redis_hostname" {
-  value     = azurerm_redis_cache.azfinsim.hostname
+  value     = local.dbg-noredis ? null : azurerm_redis_cache.azfinsim[0].hostname
   sensitive = false
 }
 output "redis_ssl_port" {
-  value     = azurerm_redis_cache.azfinsim.ssl_port
+  value     = local.dbg-noredis ? null : azurerm_redis_cache.azfinsim[0].ssl_port
   sensitive = false
 }
 
@@ -126,4 +126,15 @@ output "autoscale_pool_name" {
 output "realtimestatic_pool_name" {
     value     = azurerm_batch_pool.realtimestatic.name
     sensitive = false
+}
+#-- debugging
+
+output "compute_subnet_info" {
+  value        = azurerm_subnet.compute
+  sensitive    = false
+}
+
+output "private_dns_zone" {
+  value        = azurerm_private_dns_zone.azfinsim
+  sensitive    = false
 }
