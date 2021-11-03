@@ -66,25 +66,3 @@ resource "azurerm_key_vault" "azfinsim" {
   tags = local.resource_tags
 }
 
-# private endpoint
-# had to work through errors, add subresource_names
-# https://github.com/hashicorp/terraform-provider-azurerm/issues/9058
-# and this (using vaultcore)
-# https://github.com/hashicorp/terraform-provider-azurerm/issues/10501
-# (maybe need both?)
-
-resource "azurerm_private_endpoint" "azfinsim-kv" {
-  name                = "azfinsim-keyvault-ep"
-  location            = azurerm_resource_group.azfinsim.location
-  resource_group_name = azurerm_resource_group.azfinsim.name
-  subnet_id           = azurerm_subnet.infra.id
-
-  private_service_connection {
-    name                           = "azfinsim-keyvault-privateserviceconnection"
-    private_connection_resource_id = azurerm_key_vault.azfinsim.id
-    is_manual_connection           = false
-    # bcm azuread > 2.0
-    #subresource_names              = ["vaultcore"]
-    subresource_names              = ["vault"]
-  }
-}

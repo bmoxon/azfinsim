@@ -1,5 +1,17 @@
 # Comment out or mark "sensitive" any content you don't want visible in output
 
+#-- location
+output "location" {
+  value =  azurerm_resource_group.azfinsim.location
+  sensitive = false
+}
+
+#-- resource group
+output "resource_group_name" {
+  value =  azurerm_resource_group.azfinsim.name
+  sensitive = false
+}
+
 #-- subscription & service principal
 output "subscription_id" {
   value =  data.azurerm_client_config.current.subscription_id
@@ -127,14 +139,4 @@ output "realtimestatic_pool_name" {
     value     = azurerm_batch_pool.realtimestatic.name
     sensitive = false
 }
-#-- debugging
 
-output "compute_subnet_info" {
-  value        = azurerm_subnet.compute
-  sensitive    = false
-}
-
-output "private_dns_zone" {
-  value        = azurerm_private_dns_zone.azfinsim
-  sensitive    = false
-}
