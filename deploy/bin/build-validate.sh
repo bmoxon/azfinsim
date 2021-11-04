@@ -13,23 +13,23 @@ host="container-test-vm"
 vmadminuser="azureuser"
 sshkey="~/.ssh/id_rsa.pub"
 
-az vm show -n $host -g $AZURE_RG_NAME > /dev/null
-if [ $? -ne 0 ]; then
-echo "Creating VM $host ..."
-az vm create \
+vm=$(az vm list -g bcmazfsrg | jq -r '.[] | select(.name=="container-test-vm") | .name')
+if [ "$vm" == "$host" ]; then
+  echo "$host already exists"
+else
+  echo "Creating VM $host ..."
+  az vm create \
         --location $AZURE_LOCATION --resource-group $AZURE_RG_NAME \
         --name $host \
         --image UbuntuLTS \
         --public-ip-sku Standard \
         --size Standard_DS2_v2 \
-	--assign-identity \
         --admin-username ${vmadminuser} --ssh-key-values $sshkey
-else
-  echo "$host already exists"
+#--assign-identity
 fi
 
-prinid=$(az vm show -g $AZURE_RG_NAME -n $host --query "identity.principalId" -otsv)
-az role assignment create --assignee ${prinid} --role contributor -g $AZURE_RG_NAME > /dev/null
+#prinid=$(az vm show -g $AZURE_RG_NAME -n $host --query "identity.principalId" -otsv)
+#az role assignment create --assignee ${prinid} --role contributor -g $AZURE_RG_NAME > /dev/null
 
 vmip=$(az network public-ip show -n container-test-vmPublicIP -g bcmazfsrg | jq -r '.ipAddress')
 echo "$host publicip: ${vmip}"
@@ -58,7 +58,8 @@ if [ \$? -ne 0 ]; then
   newgrp docker
 fi
 
-az login --identity
+az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET \
+	--tenant $AZURE_TENANT_ID
 
 #-- Pull the keys we need from keyvault
 AZFINSIM_ACR_KEY=\$(az keyvault secret show --name \$AZFINSIM_ACR_SECRET_ID \
@@ -75,12 +76,19 @@ sudo docker run bcmazfsazcr.azurecr.io/azfinsim/azfinsimub1804 /azfinsim/azfinsi
 
 EOF
 
+# probably just need to refactor repo and do a sparse git pull (run vs. deploy)
+# and run prep_ubuntu.sh there
+
 #-- copy over the config and cvalid-script.sh
 ssh -o StrictHostKeyChecking=no -l ${vmadminuser} ${vmip} mkdir -p config
 ssh -o StrictHostKeyChecking=no -l ${vmadminuser} ${vmip} mkdir -p bin
 scp ../config/azfinsim.config azureuser@${vmip}:~/config
 scp cvalid-script.sh azureuser@${vmip}:~/bin
 ssh -o StrictHostKeyChecking=no -l ${vmadminuser} ${vmip} chmod u+x bin/cvalid-script.sh
+
+#-- apend to remote .bash_profile
+echo "source pythonenvs/azfinsim/bin/activate" | ssh -o StrictHostKeyChecking=no -l ${vmadminuser} ${vmip} "cat >> .bash_profile"
+echo "source config/azfinsim.config" | ssh -o StrictHostKeyChecking=no -l ${vmadminuser} ${vmip} "cat >> .bash_profile"
 
 echo "for now, we'll leave this vm running for additional testing/dev, container updates, ..."
 echo "if/when we want to get rid of it ..."

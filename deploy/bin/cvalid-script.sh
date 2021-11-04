@@ -17,7 +17,7 @@ if [ $? -ne 0 ]; then
   newgrp docker
 fi
 
-az login --identity
+az login --service-principal -u 81298e5f-d647-4647-bd4c-17404b22f3d8 -p TFdDK!N%Cl950Gpor2VE_s/WxmbiBtO36S 	--tenant 72f988bf-86f1-41af-91ab-2d7cd011db47
 
 #-- Pull the keys we need from keyvault
 AZFINSIM_ACR_KEY=$(az keyvault secret show --name $AZFINSIM_ACR_SECRET_ID 	--vault-name $AZFINSIM_KV_NAME --query "value" | tr -d '",')
