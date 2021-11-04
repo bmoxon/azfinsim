@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-CONFIGDIR="../config"
+CONFIGDIR="../../config"
 CONFIG=$CONFIGDIR/azfinsim.config
 
 deploy()
