@@ -44,6 +44,7 @@ echo "$host publicip: ${vmip}"
 # sparse pull of the azfinsim run code
 # push a copy of the generated azfinsim.config file
 
+ssh-keygen -f ~/.ssh/known_hosts -R "${vmip}"
 scp -o StrictHostKeyChecking=no init-runvm.sh ${vmadminuser}@${vmip}:~
 ssh -o StrictHostKeyChecking=no ${vmadminuser}@${vmip} chmod u+x ./init-runvm.sh
 ssh -o StrictHostKeyChecking=no ${vmadminuser}@${vmip} ./init-runvm.sh

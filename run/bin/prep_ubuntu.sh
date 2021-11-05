@@ -11,6 +11,6 @@ sudo apt install -y python3 python3-pip python3-venv
 
 mkdir -p ~/pythonenvs
 python3 -m venv ~/pythonenvs/azfsenv
-. ~/pythonenvs/azfinsim/bin/activate
+. ~/pythonenvs/azfsenv/bin/activate
 sudo pip install -r ../src/requirements.txt
 
