@@ -8,9 +8,10 @@ sudo apt update
 
 sudo apt install -y jq redis-tools
 sudo apt install -y python3 python3-pip python3-venv
+python3 -m pip install --upgrade pip
 
 mkdir -p ~/pythonenvs
 python3 -m venv ~/pythonenvs/azfsenv
 . ~/pythonenvs/azfsenv/bin/activate
-sudo pip3 install -r ../src/requirements.txt
+sudo -H pip3 install -r ../src/requirements.txt
 
