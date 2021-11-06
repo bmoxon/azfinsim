@@ -140,3 +140,8 @@ output "realtimestatic_pool_name" {
     sensitive = false
 }
 
+output "bastion_host" {
+    value     = azurerm_bastion_host.azfinsim
+    sensitive = false
+}
+

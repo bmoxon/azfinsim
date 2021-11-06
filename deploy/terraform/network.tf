@@ -23,7 +23,7 @@ resource "azurerm_subnet" "infra" {
 }
 
 resource "azurerm_subnet" "bastion" {
-  name                = "bastion"
+  name                = "AzureBastionSubnet"
   resource_group_name = azurerm_resource_group.azfinsim.name
   virtual_network_name= azurerm_virtual_network.azfinsim.name
   address_prefixes    = var.bastion_subnet_cidr

@@ -51,8 +51,8 @@ variable "compute_nhosts_max" {
 }
 
 variable "bastion_subnet_cidr" {
-  default = ["10.0.0.0/24"]
-  description = "Batch compute subnet CIDR"
+  default = ["10.0.0.0/27"]
+  description = "Bastion subnet CIDR"
   type = list
 }
 
