@@ -117,6 +117,10 @@ output "appinsights_secret_name" {
   value         = azurerm_key_vault_secret.appinsights.name
   sensitive     = false
 }
+output "headnode_ssh_publickey_name" {
+  value         = azurerm_key_vault_secret.headnode_vm_ssh_publickey.name
+  sensitive     = false
+}
 
 #-- batch
 output "batch_account_endpoint" {
@@ -140,8 +144,34 @@ output "realtimestatic_pool_name" {
     sensitive = false
 }
 
-output "bastion_host" {
+output "headnode_vm_admin_user" {
+  value         = azurerm_linux_virtual_machine.azfinsim_headnode_vm.admin_username
+  sensitive     = false
+}
+output "headnode_vm_pubip" {
+    value     = azurerm_linux_virtual_machine.azfinsim_headnode_vm.public_ip_address
+    sensitive = false
+}
+output "headnode_vm_ssh_public_key" {
+  value         = tls_private_key.azfinsim_headnode_ssh.public_key_openssh
+  sensitive     = true
+}
+output "headnode_vm_ssh_private_key" {
+  value         = tls_private_key.azfinsim_headnode_ssh.private_key_pem
+  sensitive     = true
+}
+
+# degugging .. narrow or remove
+
+output "dbg_headnode_vm" {
+  value         = azurerm_linux_virtual_machine.azfinsim_headnode_vm
+  sensitive     = false
+}
+
+output "dbg_bastion_host" {
     value     = azurerm_bastion_host.azfinsim
     sensitive = false
 }
+
+
 

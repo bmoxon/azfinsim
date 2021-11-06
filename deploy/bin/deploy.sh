@@ -36,6 +36,8 @@ generate_config()
     AZFINSIM_REDIS_SECRET_ID=$(echo $vars | jq -r '.redis_secret_name.value')
     AZFINSIM_APPINSIGHTS_SECRET_ID=$(echo $vars | jq -r '.appinsights_secret_name.value')
     AZFINSIM_STORAGE_SAS_SECRET_ID=$(echo $vars | jq -r '.storage_sas_secret_name.value')
+    AZFINSIM_HEADNODE_VM_PRIVKEY_ID=$(echo $vars | jq -r '.headnode_vm_ssh_private_key.value')
+    AZFINSIM_HEADNODE_VM_PUBKEY_ID=$(echo $vars | jq -r '.headnode_vm_ssh_public_key.value')
 
     #-- secret is masked - pull from tfstate
     AZURE_CLIENT_SECRET=$(terraform show --json | jq -r '.values.outputs.sp_password.value')
@@ -64,7 +66,12 @@ generate_config()
     AZFINSIM_ACR_SIM="azfinsimub1804"
     AZFINSIM_ACR_REPO="azfinsim"
     AZFINSIM_ACR_IMAGE="$AZFINSIM_ACR/$AZFINSIM_ACR_REPO/$AZFINSIM_ACR_SIM"
- 
+
+    AZFINSIM_HEADNODE_VM_PUBIP=$(echo $vars | jq -r '.headnode_vm_pubip.value')
+    #-- pem is masked - pull from tfstate
+    AZFINSIM_HEADNODE_VM_PEM=$(terraform show --json | jq -r '.values.outputs.headnode_vm_ssh_private_key.value')
+    AZFINSIM_HEADNODE_VM_ADMINUSER=$(echo $vars | jq -r '.headnode_vm_admin_user.value')
+   
     #-- build environment file for user job submission scripts
 cat << EOF > $CONFIG
 #######################################
@@ -89,6 +96,8 @@ export AZFINSIM_STORAGE_SAS_SECRET_ID="$AZFINSIM_STORAGE_SAS_SECRET_ID"
 export AZFINSIM_ACR_SECRET_ID="$AZFINSIM_ACR_SECRET_ID"
 export AZFINSIM_REDIS_SECRET_ID="$AZFINSIM_REDIS_SECRET_ID"
 export AZFINSIM_APPINSIGHTS_SECRET_ID="$AZFINSIM_APPINSIGHTS_SECRET_ID"
+export AZFINSIM_HEADNODE_VM_PRIVKEY_ID="$AZFINSIM_HEADNODE_VM_PRIVKEY_ID"
+export AZFINSIM_HEADNODE_VM_PUBKEY_ID="$AZFINSIM_HEADNODE_VM_PUBKEY_ID"
 #-- storage 
 export AZFINSIM_STORAGE_CONTAINER_URI="$AZFINSIM_STORAGE_CONTAINER_URI"
 export AZFINSIM_STORAGE_ACCOUNT="$AZFINSIM_STORAGE_ACCOUNT"
@@ -104,6 +113,9 @@ export AZFINSIM_ACR_REPO="azfinsim"
 export AZFINSIM_ACR_USER="$AZFINSIM_ACR_USER"
 export AZFINSIM_ACR_SIM="azfinsimub1804"
 export AZFINSIM_ACR_IMAGE="$AZFINSIM_ACR_IMAGE"
+#-- headnode
+export AZFINSIM_HEADNODE_VM_ADMINUSER="$AZFINSIM_HEADNODE_VM_ADMINUSER"
+export AZFINSIM_HEADNODE_VM_PUBIP="$AZFINSIM_HEADNODE_VM_PUBIP"
 EOF
 } 
 
@@ -125,6 +137,38 @@ usage()
     exit 1
 } 
 
+pemloc=~/.ssh/azfshn.pem
+user=$AZFINSIM_HEADNODE_VM_ADMINUSER
+
+get_headnode_pem()
+{
+   echo "Writing new headnode pem to ${pemloc}"
+   if [ -f ${pemloc} ]; then
+     ts=$(date +%Y%m%dT%H%M%S)
+     echo "Found existing azfshn.pem; moving to azfsnh.pem.backup.${ts}"
+     mv $pemloc $pemloc.backup.${ts}
+   fi
+   #printf "%s" $AZFINSIM_HEADNODE_VM_PEM > $pemloc
+   echo "$AZFINSIM_HEADNODE_VM_PEM" > ${pemloc}
+   chmod 400 ${pemloc}
+}
+
+prep_headnode()
+{
+   echo "Prepping headnode..."
+   user=$AZFINSIM_HEADNODE_VM_ADMINUSER
+   host=$AZFINSIM_HEADNODE_VM_PUBIP
+   scp -i ${pemloc} ${deploybin}/init-hn.sh  ${user}@${host}:~
+   ssh -i ${pemloc} ${user}@${host} chmod u+x ./init-hn.sh
+   ssh -i ${pemloc} ${user}@${host} ./init-hn.sh | tee ${deploybin}/init-hn.log
+}
+
+echo_ssh_cmd()
+{
+   echo "To ssh to the headnode:"
+   echo "$ ssh -i ~/.ssh/azfshn.pem azfinsim@$AZFINSIM_HEADNODE_VM_PUBIP"
+}
+
 autoapprove=false
 while [[ $# -gt 0 ]]
 do
@@ -141,8 +185,12 @@ do
    esac
 done
 
-check_env 
+check_env
+deploybin=$(pwd)
 pushd ../terraform >/dev/null 
-deploy $autoapprove
+# deploy $autoapprove
 generate_config
+get_headnode_pem
+prep_headnode
+echo_ssh_cmd
 popd >/dev/null 

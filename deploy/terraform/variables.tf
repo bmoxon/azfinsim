@@ -11,8 +11,8 @@ variable "deployenv" {
 }
 
 variable "debug" {
-  #default = "no-redis"
-  default = null
+  default = "no-redis"
+  #default = null
   description = "Debug flag for various scenarios, e.g. no-redis for no redis deployment"
   type = string
 }
@@ -68,6 +68,10 @@ variable "start_task" {
   type = string
 }
 
+variable "headnode_vm_size" {
+  default = "Standard_DS2_v2"
+  type = string
+}
 variable "vm_size" {
   default = "Standard_D8s_v3"
   type = string

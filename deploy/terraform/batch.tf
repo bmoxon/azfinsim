@@ -4,7 +4,7 @@ resource "azurerm_storage_blob" "start_task" {
   storage_account_name   = azurerm_storage_account.azfinsim.name
   storage_container_name = azurerm_storage_container.azfinsim.name
   type                   = "Block"
-  source                 = format("../src/%s",var.start_task)
+  source                 = format("../../run/src/%s",var.start_task)
 }
 
 #-- Azure Batch Account Configuration

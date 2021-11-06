@@ -1,5 +1,8 @@
 #!/bin/bash -e
 
+# init-hn.sh
+# init the environment for the headnode
+
 echo "pulling azfinsim/run from github"
 
 mkdir -p azfinsim-run
