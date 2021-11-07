@@ -13,5 +13,5 @@ python3 -m pip install --upgrade pip
 mkdir -p ~/pythonenvs
 python3 -m venv ~/pythonenvs/azfsenv
 . ~/pythonenvs/azfsenv/bin/activate
-sudo -H pip3 install -r ~/azfinsim-run/run/src/requirements.txt
+pip3 install -r ~/azfinsim-run/run/src/requirements.txt
 

@@ -168,7 +168,7 @@ output "dbg_headnode_vm" {
   sensitive     = false
 }
 
-output "dbg_bastion_host" {
+output "dbg_bastion" {
     value     = azurerm_bastion_host.azfinsim
     sensitive = false
 }

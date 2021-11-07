@@ -158,15 +158,19 @@ prep_headnode()
    echo "Prepping headnode..."
    user=$AZFINSIM_HEADNODE_VM_ADMINUSER
    host=$AZFINSIM_HEADNODE_VM_PUBIP
-   scp -i ${pemloc} ${deploybin}/init-hn.sh  ${user}@${host}:~
-   ssh -i ${pemloc} ${user}@${host} chmod u+x ./init-hn.sh
-   ssh -i ${pemloc} ${user}@${host} ./init-hn.sh | tee ${deploybin}/init-hn.log
+   scp -o StrictHostKeyChecking=no -i ${pemloc} ${deploybin}/init-hn.sh  ${user}@${host}:~
+   ssh -o StrictHostKeyChecking=no -i ${pemloc} ${user}@${host} chmod u+x ./init-hn.sh
+   ssh -o StrictHostKeyChecking=no -i ${pemloc} ${user}@${host} ./init-hn.sh | tee ${deploybin}/init-hn.log
+   scp -o StrictHostKeyChecking=no -i ${pemloc} ${deploybin}/../../config/azfinsim.config ${user}@${host}:~/azfinsim-run/config/
 }
 
 echo_ssh_cmd()
 {
    echo "To ssh to the headnode:"
    echo "$ ssh -i ~/.ssh/azfshn.pem azfinsim@$AZFINSIM_HEADNODE_VM_PUBIP"
+   echo "... perhaps you might alias it?"
+   cmd="ssh -i ~/.ssh/azfshn.pem azfinsim@$AZFINSIM_HEADNODE_VM_PUBIP"
+   echo "$ alias azfs=\'$cmd\'"
 }
 
 autoapprove=false
@@ -188,7 +192,7 @@ done
 check_env
 deploybin=$(pwd)
 pushd ../terraform >/dev/null 
-deploy $autoapprove
+# deploy $autoapprove
 generate_config
 get_headnode_pem
 prep_headnode
