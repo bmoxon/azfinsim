@@ -82,11 +82,11 @@ output "azcr_server" {
 
 #-- redis 
 output "redis_hostname" {
-  value     = local.dbg-noredis ? null : azurerm_redis_cache.azfinsim[0].hostname
+  value     = local.inc-redis ? azurerm_redis_cache.azfinsim[0].hostname : null
   sensitive = false
 }
 output "redis_ssl_port" {
-  value     = local.dbg-noredis ? null : azurerm_redis_cache.azfinsim[0].ssl_port
+  value     = local.inc-redis ? azurerm_redis_cache.azfinsim[0].ssl_port : null
   sensitive = false
 }
 

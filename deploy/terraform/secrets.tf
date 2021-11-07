@@ -2,7 +2,7 @@
 resource "azurerm_key_vault_secret" "redis" {
   #count        = local.dbg-noredis ? 0 : 1
   name         = format("AzFinSimRedisKey-%s", random_string.suffix.result)
-  value        = local.dbg-noredis ? "noredis-secret" : azurerm_redis_cache.azfinsim[0].primary_access_key
+  value        = local.inc-redis ? azurerm_redis_cache.azfinsim[0].primary_access_key : "no-redis-secret"
   key_vault_id = azurerm_key_vault.azfinsim.id
 }
 resource "azurerm_key_vault_secret" "storage" {
@@ -20,7 +20,7 @@ resource "azurerm_key_vault_secret" "appinsights" {
   value        = azurerm_application_insights.azfinsim.instrumentation_key
   key_vault_id = azurerm_key_vault.azfinsim.id
 }
-resource "azurerm_key_vault_secret" "headnode_vm_ssh_privkey" {
+resource "azurerm_key_vault_secret" "headnode_vm_ssh_privatekey" {
   name         = format("AzFinSimHeadnodePrivKey-%s", random_string.suffix.result)
   value        = tls_private_key.azfinsim_headnode_ssh.private_key_pem
   key_vault_id = azurerm_key_vault.azfinsim.id

@@ -1,20 +1,22 @@
 locals {
   env-dev = var.deployenv == "DEV"
   env-prod = var.deployenv == "PROD"
-  dbg-noredis = var.debug == "no-redis"
+  inc-redis = contains(var.flags, "redis")
+  inc-xnfs = contains(var.flags, "xnfs")
+  inc-hpcc = contains(var.flags, "hpcc")
 }
 
 variable "deployenv" {
-  default = "DEV"
+  default = "DEV" # DEV or PROD
   description = "Deployment environment to target (DEV/PROD) - affects resource types and scale"
   type = string
 }
 
-variable "debug" {
-  default = "no-redis"
+variable "flags" {
+  default = [ "redis" ] # e.g. [ "redis", "xnfs", "hpcc" ]
   #default = null
-  description = "Debug flag for various scenarios, e.g. no-redis for no redis deployment"
-  type = string
+  description = "Flags for various deployment configurations / scenarios, e.g. redis, xnfs, hpcc"
+  type = list
 }
 
 #-- name of the application (resource names will all be prefixed with this string)
