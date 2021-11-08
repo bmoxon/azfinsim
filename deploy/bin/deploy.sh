@@ -168,9 +168,6 @@ echo_ssh_cmd()
 {
    echo "To ssh to the headnode:"
    echo "$ ssh -i ~/.ssh/azfshn.pem azfinsim@$AZFINSIM_HEADNODE_VM_PUBIP"
-   echo "... perhaps you might alias it?"
-   cmd="ssh -i ~/.ssh/azfshn.pem azfinsim@$AZFINSIM_HEADNODE_VM_PUBIP"
-   echo "$ alias azfs=\'$cmd\'"
 }
 
 autoapprove=false
