@@ -16,7 +16,6 @@ rem=$(git remote)
 if [ "$rem" != "origin" ]; then
   git remote add -f origin https://github.com/bmoxon/azfinsim.git
 fi
-git remote add -f origin https://github.com/bmoxon/azfinsim.git
 git pull origin cloudshell-noep
 popd
 

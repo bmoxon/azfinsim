@@ -2,6 +2,6 @@ deploy/terraform/.terraform.lock.hcl
 deploy/terraform/.terraform/
 deploy/terraform/terraform.tfstate
 deploy/terraform/terraform.tfstate.backup
-deploy/bin/init-hn.log
+logs/init-hn.log
 config/azfinsim.config
 run/src/__pychache__/
