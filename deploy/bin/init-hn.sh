@@ -31,7 +31,7 @@ popd
 echo "prepping the runvm (ubuntu)"
 ./azfinsim-run/run/bin/prep_ubuntu.sh
 
-if [ ! -f ~/.bash_profile ]; then
+if [ -f ~/.bash_profile ]; then
   echo ".bash_profile exists; not overwriting"
 else
   echo "Creating .bash_profile"
@@ -40,8 +40,8 @@ else
 source ~/pythonenvs/azfsenv/bin/activate
 
 # az login
-. ./azfinsim.config
-az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
+. ./azfinsim-run/config/azfinsim.config
+az login --service-principal -u "$AZURE_CLIENT_ID" -p "$AZURE_CLIENT_SECRET" --tenant "$AZURE_TENANT_ID"
 EOF
 fi
 
