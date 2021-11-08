@@ -160,12 +160,13 @@ prep_headnode()
    host=$AZFINSIM_HEADNODE_VM_PUBIP
    scp -o StrictHostKeyChecking=no -i ${pemloc} ${deploybin}/init-hn.sh  ${user}@${host}:~
    ssh -o StrictHostKeyChecking=no -i ${pemloc} ${user}@${host} chmod u+x ./init-hn.sh
-   ssh -o StrictHostKeyChecking=no -i ${pemloc} ${user}@${host} ./init-hn.sh | tee ${deploybin}/init-hn.log
+   ssh -o StrictHostKeyChecking=no -i ${pemloc} ${user}@${host} ./init-hn.sh | tee ${deploybin}/../../logs/init-hn.log
    scp -o StrictHostKeyChecking=no -i ${pemloc} ${deploybin}/../../config/azfinsim.config ${user}@${host}:~/azfinsim-run/config/
 }
 
 echo_ssh_cmd()
 {
+   echo
    echo "To ssh to the headnode:"
    echo "$ ssh -i ~/.ssh/azfshn.pem azfinsim@$AZFINSIM_HEADNODE_VM_PUBIP"
 }
