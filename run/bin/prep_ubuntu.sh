@@ -13,11 +13,6 @@ mkdir -p ~/pythonenvs
 python3 -m venv ~/pythonenvs/azfsenv
 . ~/pythonenvs/azfsenv/bin/activate
 python3 -m pip install --upgrade pip
-sudo cat > ~/.profile << EOF
-
-# activate python env
-source ~/pythonenvs/azfsenv/bin/activate
-EOF
 
 pip3 install -r ~/azfinsim-run/run/src/requirements.txt
 
