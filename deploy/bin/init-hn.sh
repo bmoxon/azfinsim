@@ -18,9 +18,11 @@ mkdir -p azfinsim-run
 pushd azfinsim-run
 git init
 git config core.sparsecheckout true
-echo config/ >> .git/info/sparse-checkout
+echo config/ > .git/info/sparse-checkout
 echo run/bin/ >> .git/info/sparse-checkout
 echo run/src/ >> .git/info/sparse-checkout
+echo run/data/ >> .git/info/sparse-checkout
+echo run/img/ >> .git/info/sparse-checkout
 rem=$(git remote)
 if [ "$rem" != "origin" ]; then
   git remote add -f origin https://github.com/bmoxon/azfinsim.git
@@ -41,7 +43,7 @@ source ~/pythonenvs/azfsenv/bin/activate
 
 # az login
 . ./azfinsim-run/config/azfinsim.config
-az login --service-principal -u "$AZURE_CLIENT_ID" -p "$AZURE_CLIENT_SECRET" --tenant "$AZURE_TENANT_ID"
+az login --service-principal -u '$AZURE_CLIENT_ID' -p '$AZURE_CLIENT_SECRET' --tenant '$AZURE_TENANT_ID'
 EOF
 fi
 

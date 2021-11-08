@@ -15,7 +15,7 @@ if [ $# -eq 1 ]; then
   ntr=$1
 fi
 
--- get the redis password
+#-- get the redis password
 AZFINSIM_REDIS_KEY=$(az keyvault secret show --name $AZFINSIM_REDIS_SECRET_ID --vault-name $AZFINSIM_KV_NAME --query "value" | tr -d '",')
 
 #-- inject 
