@@ -10,6 +10,8 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+AZFINSIM_REDIS_KEY=$(az keyvault secret show --name $AZFINSIM_REDIS_SECRET_ID --vault-name $AZFINSIM_KV_NAME --query "value" | tr -d '",')
+
 #-- select pool 
 POOL=$AZFINSIM_AUTOSCALE_POOL
 #POOL=$AZFINSIM_REALTIME_POOL
