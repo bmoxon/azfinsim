@@ -12,7 +12,7 @@ if [ $? -ne 0 ]; then
 fi
 
 if [ $# -ne 2 ]; then
-  echo "Usage: build-run.sh <vmname> <vmsize>"
+  echo "Usage: build-run.sh <vmname> <sku-name>"
   echo "  e.g. build-run.sh vmtest-e64 Standard_E64ds_v5"
   echo "       (note: uses same PEM/public key as headnode)"
   exit 1
@@ -21,7 +21,7 @@ fi
 pemloc=~/.ssh/azfshn.pem
 user=$AZFINSIM_HEADNODE_VM_ADMINUSER
 host=$1
-vmsize=$2
+vmsku=$2
 sshkey=$AZFINSIM_HEADNODE_VM_PUBKEY_ID
 
 create_vm()
@@ -36,7 +36,7 @@ create_vm()
           --name $host \
           --image UbuntuLTS \
           --public-ip-sku Standard \
-          --size ${vmsize} \
+          --size ${vmsku} \
           --admin-username ${user} --ssh-key-values "$sshkey"
           
     # ToDo: really want dnsname in private dns
