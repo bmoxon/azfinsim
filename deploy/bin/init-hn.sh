@@ -45,8 +45,17 @@ else
 source ~/pythonenvs/azfsenv/bin/activate
 
 # az login
-. ./azfinsim-run/config/azfinsim.config
+. \$HOME/azfinsim-run/config/azfinsim.config
 az login --service-principal -u '$AZURE_CLIENT_ID' -p '$AZURE_CLIENT_SECRET' --tenant '$AZURE_TENANT_ID'
+
+# redis env vars
+export AZFINSIM_REDIS_KEY="$(az keyvault secret show \
+        --name $AZFINSIM_REDIS_SECRET_ID --vault-name $AZFINSIM_KV_NAME --query "value" \
+        | tr -d '",')"
+
+# setup rcli alias
+alias rcli='redis-cli -h \$AZFINSIM_REDISHOST -p 6379 -a \$AZFINSIM_REDIS_KEY'
+
 EOF
 fi
 
