@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+# pull from ACR repo to local docker repo
+
 source ./utils.sh
 Config
 if [ $? -ne 0 ]; then

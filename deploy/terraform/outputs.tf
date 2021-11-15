@@ -70,6 +70,28 @@ output "sas_url_query_string" {
   sensitive            = true
 }
 
+output "xnfs_primary_blob_endpoint" {
+  value     = local.inc-xnfs ? azurerm_storage_account.azfinsimxnfs[0].primary_blob_endpoint : null
+  sensitive = false
+}
+output "xnfs_primary_blob_connection_string" {
+  value     = local.inc-xnfs ? azurerm_storage_account.azfinsimxnfs[0].primary_connection_string : null
+  sensitive = true
+}
+output "xnfs_storage_account_name" {
+  value     = local.inc-xnfs ? azurerm_storage_account.azfinsimxnfs[0].name : null
+  sensitive = false
+}
+output "xnfs_container_name" {
+  value     = local.inc-xnfs ? azurerm_storage_container.azfinsimxnfs[0].name : null
+  sensitive = false
+}
+#-- container sas key
+output "xnfs_sas_url_query_string" {
+  value     = local.inc-xnfs ? data.azurerm_storage_account_blob_container_sas.azfinsimxnfs[0].sas : null
+  sensitive = true
+}
+
 #-- container registry
 output "azcr_username" {
   value     = azurerm_container_registry.azfinsim.admin_username
@@ -163,15 +185,15 @@ output "headnode_vm_ssh_private_key" {
 
 # degugging .. narrow or remove
 
-output "dbg_headnode_vm" {
-  value         = azurerm_linux_virtual_machine.azfinsim_headnode_vm
-  sensitive     = false
-}
+#output "dbg_headnode_vm" {
+#  value         = azurerm_linux_virtual_machine.azfinsim_headnode_vm
+#  sensitive     = false
+#}
 
-output "dbg_bastion" {
-    value     = azurerm_bastion_host.azfinsim
-    sensitive = false
-}
+#output "dbg_bastion" {
+#    value     = azurerm_bastion_host.azfinsim
+#    sensitive = false
+#}
 
 
 

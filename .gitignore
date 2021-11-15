@@ -4,4 +4,4 @@ deploy/terraform/terraform.tfstate
 deploy/terraform/terraform.tfstate.backup
 logs/init-hn.log
 config/azfinsim.config
-run/src/__pychache__/
+run/src/__pycache__/

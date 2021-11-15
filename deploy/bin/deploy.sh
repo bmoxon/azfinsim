@@ -36,6 +36,7 @@ generate_config()
     AZFINSIM_REDIS_SECRET_ID=$(echo $vars | jq -r '.redis_secret_name.value')
     AZFINSIM_APPINSIGHTS_SECRET_ID=$(echo $vars | jq -r '.appinsights_secret_name.value')
     AZFINSIM_STORAGE_SAS_SECRET_ID=$(echo $vars | jq -r '.storage_sas_secret_name.value')
+    AZFINSIM_XNFS_STORAGE_SAS_SECRET_ID=$(echo $vars | jq -r '.xnfs_storage_sas_secret_name.value')
     AZFINSIM_HEADNODE_VM_PRIVKEY_ID=$(echo $vars | jq -r '.headnode_vm_ssh_private_key.value')
     AZFINSIM_HEADNODE_VM_PUBKEY_ID=$(echo $vars | jq -r '.headnode_vm_ssh_public_key.value')
 
@@ -58,6 +59,11 @@ generate_config()
     container_name=$(echo $vars | jq -r '.container_name.value')
     AZFINSIM_STORAGE_ACCOUNT=$(echo $vars | jq -r '.storage_account_name.value')
     AZFINSIM_STORAGE_CONTAINER_URI="$storage_account$container_name"
+
+    xnfs_storage_account=$(echo $vars | jq -r '.xnfs_primary_blob_endpoint.value')
+    xnfs_container_name=$(echo $vars | jq -r '.xnfs_container_name.value')
+    AZFINSIM_STORAGE_ACCOUNT=$(echo $vars | jq -r '.xnfs_storage_account_name.value')
+    AZFINSIM_STORAGE_CONTAINER_URI="$xnfs_storage_account$xnfs_container_name"
 
     APP_INSIGHTS_APP_ID=$(echo $vars | jq -r '.appinsights_app_id.value')
 
@@ -100,6 +106,8 @@ export AZFINSIM_HEADNODE_VM_PUBKEY_ID="$AZFINSIM_HEADNODE_VM_PUBKEY_ID"
 #-- storage 
 export AZFINSIM_STORAGE_CONTAINER_URI="$AZFINSIM_STORAGE_CONTAINER_URI"
 export AZFINSIM_STORAGE_ACCOUNT="$AZFINSIM_STORAGE_ACCOUNT"
+export AZFINSIM_XNFS_STORAGE_CONTAINER_URI="$AZFINSIM_XNFS_STORAGE_CONTAINER_URI"
+export AZFINSIM_XNFS_STORAGE_ACCOUNT="$AZFINSIM_XNFS_STORAGE_ACCOUNT"
 #-- redis details
 export AZFINSIM_REDISPORT=$REDISPORT
 export AZFINSIM_REDISHOST="$REDISHOST"
@@ -189,7 +197,7 @@ done
 check_env
 deploybin=$(pwd)
 pushd ../terraform >/dev/null 
-#deploy $autoapprove
+deploy $autoapprove
 generate_config
 get_headnode_pem
 prep_headnode
