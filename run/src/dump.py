@@ -40,7 +40,7 @@ if __name__ == "__main__":
 
     f = open("dump.txt", "a")
 
-    for tradenum in range(0,1000000):
+    for tradenum in range(args.start_trade, args.trade_window):
         keyname = "ey%007d.xml" % tradenum
 	    #-- read trade from cache
         xmlstring=utils.GetTrade(r,keyname)

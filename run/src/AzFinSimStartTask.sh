@@ -11,7 +11,11 @@ pushd /tmp
 wget https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb
 sudo dpkg -i packages-microsoft-prod.deb
 sudo apt-get -y -q update
-sudo apt-get -y -q install blobfuse
+# should be already installed on the node
+# if not, may have to ... (though i think this will have the same dialog issue?)
+# https://github.com/moby/moby/issues/27988
+# sudo apt-get install -y -q dialog apt-utils
+# sudo apt-get -y -q install blobfuse
 
 # set up local cache dir (just setting up blob fuse for the batch-explorer-user)
 

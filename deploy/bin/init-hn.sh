@@ -46,7 +46,7 @@ source ~/pythonenvs/azfsenv/bin/activate
 
 # az login
 . \$HOME/azfinsim-run/config/azfinsim.config
-az login --service-principal -u '$AZURE_CLIENT_ID' -p '$AZURE_CLIENT_SECRET' --tenant '$AZURE_TENANT_ID'
+az login --service-principal -u \$AZURE_CLIENT_ID -p \$AZURE_CLIENT_SECRET --tenant \$AZURE_TENANT_ID
 
 # redis env vars
 export AZFINSIM_REDIS_KEY="$(az keyvault secret show \

@@ -14,8 +14,16 @@ AZFINSIM_REDIS_KEY=$(az keyvault secret show --name $AZFINSIM_REDIS_SECRET_ID --
 
 # nkeys
 
-ntrades=$(redis-cli -h $AZFINSIM_REDISHOST -p 6379 -a "$AZFINSIM_REDIS_KEY" keys '*'| wc -l)
-echo $ntrades
+ntrades=$(redis-cli -h $AZFINSIM_REDISHOST -p 6379 -a "$AZFINSIM_REDIS_KEY" keys 'ey*'| wc -l)
+if [ $ntrades -eq 1 ]; then
+  trades=$(redis-cli -h $AZFINSIM_REDISHOST -p 6379 -a "$AZFINSIM_REDIS_KEY" keys 'ey*')
+  if [ "$trades" == "" ]; then
+    echo "no trades in redis; exiting"
+    exit 1
+  fi
+fi
+
+echo "dumping $ntrades trades to dump.txt"
 
 ../src/dump.py \
 	--start-trade 0 --trade-window $ntrades \
