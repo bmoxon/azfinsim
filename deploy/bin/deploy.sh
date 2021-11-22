@@ -197,7 +197,7 @@ done
 check_env
 deploybin=$(pwd)
 pushd ../terraform >/dev/null 
-#deploy $autoapprove
+deploy $autoapprove
 generate_config
 get_headnode_pem
 prep_headnode
