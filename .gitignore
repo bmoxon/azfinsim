@@ -5,3 +5,4 @@ deploy/terraform/terraform.tfstate.backup
 logs/init-hn.log
 config/azfinsim.config
 run/src/__pycache__/
+.vscode/

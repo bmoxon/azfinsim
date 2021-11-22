@@ -5,7 +5,7 @@
 source ./utils.sh
 Config
 if [ $? -ne 0 ]; then
-  echo "       (The redis cache needs to be created before you can connect to it)"
+	echo "       (azfinsim CONFIG ENV unavailablei)"
   exit 1
 fi
 

@@ -58,12 +58,12 @@ generate_config()
     storage_account=$(echo $vars | jq -r '.primary_blob_endpoint.value')
     container_name=$(echo $vars | jq -r '.container_name.value')
     AZFINSIM_STORAGE_ACCOUNT=$(echo $vars | jq -r '.storage_account_name.value')
-    AZFINSIM_STORAGE_CONTAINER_URI="$storage_account$container_name"
+    AZFINSIM_STORAGE_CONTAINER_URI="${storage_account}${container_name}"
 
     xnfs_storage_account=$(echo $vars | jq -r '.xnfs_primary_blob_endpoint.value')
     xnfs_container_name=$(echo $vars | jq -r '.xnfs_container_name.value')
-    AZFINSIM_STORAGE_ACCOUNT=$(echo $vars | jq -r '.xnfs_storage_account_name.value')
-    AZFINSIM_STORAGE_CONTAINER_URI="$xnfs_storage_account$xnfs_container_name"
+    AZFINSIM_XNFS_STORAGE_ACCOUNT=$(echo $vars | jq -r '.xnfs_storage_account_name.value')
+    AZFINSIM_XNFS_STORAGE_CONTAINER_URI="$xnfs_storage_account$xnfs_container_name"
 
     APP_INSIGHTS_APP_ID=$(echo $vars | jq -r '.appinsights_app_id.value')
 
@@ -197,7 +197,7 @@ done
 check_env
 deploybin=$(pwd)
 pushd ../terraform >/dev/null 
-deploy $autoapprove
+#deploy $autoapprove
 generate_config
 get_headnode_pem
 prep_headnode

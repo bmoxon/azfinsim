@@ -3,6 +3,9 @@
 # init-hn.sh
 # init the environment for the headnode
 
+# env for init-hn.sh execution
+. $HOME/azfinsim-run/config/azfinsim.config
+
 # installing az cli
 curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
