@@ -97,22 +97,6 @@ if __name__ == "__main__":
             sys.exit(1)
 
         if (args.algorithm == "synthetic"): 
-        #-- drop a token in the blobfuse dir
-            # host machine has /mnt/batch/tasks/fsmounts, /mnt/batch/tasks/shared
-            # not clear how those are passed through to the container ...
- 
-            # bcm test
-            path = '/fsmounts'
-            files = os.listdir(path)
-            print('dir: {}'.format(path))
-            for filename in files:
-                print(filename)
-
-            try:
-                Path('/fsmounts/breadcrumb.txt').touch()
-            except:
-                print("unable to touch /azfinsim-data/breadcrumb.txt")
-
 	    #-- fake pricing computation - tunable duration - mainly for benchmarking schedulers
             start=time.perf_counter()
             if (args.task_duration > 0):
