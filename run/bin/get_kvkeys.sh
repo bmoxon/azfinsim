@@ -1,6 +1,11 @@
 #!/bin/bash
 
-source ../config/azfinsim.config
+source ./utils.sh
+Config
+if [ $? -ne 0 ]; then
+  echo "       (The redis cache needs to be created before you can inject the trade data)"
+  exit 1
+fi
 
 #-- test purposes only - get the keyvault stored secrets created by terraform
 

@@ -18,11 +18,12 @@ if [ $# -ne 2 ]; then
   exit 1
 fi
 
-pemloc=~/.ssh/azfshn.pem
+pemloc="~/.ssh/azfshn.pem"
 user=$AZFINSIM_HEADNODE_VM_ADMINUSER
 host=$1
 vmsku=$2
 sshkey=$AZFINSIM_HEADNODE_VM_PUBKEY_ID
+hostip="20.69.149.203"
 
 create_vm()
 {
@@ -48,7 +49,7 @@ create_vm()
 
 prep_runnode()
 {
-   echo "Prepping runnode..."
+   echo "Prepping runnode ${host} at ${hostip}..."
    scp -o StrictHostKeyChecking=no -i ${pemloc} ${deploybin}/init-hn.sh  ${user}@${hostip}:~
    ssh -o StrictHostKeyChecking=no -i ${pemloc} ${user}@${hostip} chmod u+x ./init-hn.sh
    ssh -o StrictHostKeyChecking=no -i ${pemloc} ${user}@${hostip} ./init-hn.sh | tee ${deploybin}/../../logs/init-hn.log
@@ -63,6 +64,6 @@ echo_ssh_cmd()
 }
 
 deploybin=$(pwd)
-create_vm
+#`create_vm
 prep_runnode
 echo_ssh_cmd

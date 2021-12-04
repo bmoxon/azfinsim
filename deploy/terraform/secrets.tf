@@ -10,6 +10,11 @@ resource "azurerm_key_vault_secret" "storage" {
   value        = data.azurerm_storage_account_blob_container_sas.azfinsim.sas
   key_vault_id = azurerm_key_vault.azfinsim.id
 }
+resource "azurerm_key_vault_secret" "appdata_storage" {
+  name         = format("AzFinSimAppDataStorageSas-%s", random_string.suffix.result)
+  value        = data.azurerm_storage_account_blob_container_sas.azfinsim_appdata.sas
+  key_vault_id = azurerm_key_vault.azfinsim.id
+}
 resource "azurerm_key_vault_secret" "azcr" {
   name         = format("AzFinSimACRKey-%s", random_string.suffix.result)
   value        = azurerm_container_registry.azfinsim.admin_password

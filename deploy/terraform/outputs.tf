@@ -69,6 +69,15 @@ output "sas_url_query_string" {
   value               = data.azurerm_storage_account_blob_container_sas.azfinsim.sas
   sensitive            = true
 }
+output "appdata_container_name" {
+  value     = azurerm_storage_container.azfinsim_appdata.name
+  sensitive = false
+}
+#-- container sas key
+output "appdata_sas_url_query_string" {
+  value               = data.azurerm_storage_account_blob_container_sas.azfinsim_appdata.sas
+  sensitive            = true
+}
 
 output "xnfs_primary_blob_endpoint" {
   value     = local.inc-xnfs ? azurerm_storage_account.azfinsimxnfs[0].primary_blob_endpoint : null
@@ -131,6 +140,10 @@ output "storage_sas_secret_name" {
   value         = azurerm_key_vault_secret.storage.name
   sensitive     = false
 }
+output "appdata_storage_sas_secret_name" {
+  value         = azurerm_key_vault_secret.appdata_storage.name
+  sensitive     = false
+}
 output "redis_secret_name" {
   value         = azurerm_key_vault_secret.redis.name
   sensitive     = false
@@ -145,6 +158,10 @@ output "headnode_ssh_publickey_name" {
 }
 
 #-- batch
+output "batch_account_name" {
+  value     = azurerm_batch_account.azfinsim.name
+  sensitive = false
+}
 output "batch_account_endpoint" {
   value     = azurerm_batch_account.azfinsim.account_endpoint
   sensitive = false

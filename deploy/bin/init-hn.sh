@@ -3,6 +3,19 @@
 # init-hn.sh
 # init the environment for the headnode
 
+# check for already init'ed or override
+
+if [ -f ~/.init-hn.ok ]; then
+  echo "init-hn already run"
+  if [ $# -eq 0 ]; then
+    echo "exiting"
+    exit 1
+  elif [ "$1" != "-y" ]; then
+    echo "invalid flag to force re-init; expecting '-y'"
+    exit 1
+  fi
+fi
+
 # env for init-hn.sh execution
 . $HOME/azfinsim-run/config/azfinsim.config
 
@@ -62,4 +75,5 @@ alias rcli='redis-cli -h \$AZFINSIM_REDISHOST -p 6379 -a \$AZFINSIM_REDIS_KEY'
 EOF
 fi
 
-
+# drop a token indicating successful init
+touch ~/.init-hn.ok

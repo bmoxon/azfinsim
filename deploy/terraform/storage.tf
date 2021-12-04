@@ -38,6 +38,34 @@ data "azurerm_storage_account_blob_container_sas" "azfinsim" {
   }
 }
 
+#-- Storage Container - Data
+resource "azurerm_storage_container" "azfinsim_appdata" {
+  name                  = "azfinsim-appdata"
+  storage_account_name  = azurerm_storage_account.azfinsim.name
+  container_access_type = "private"
+}
+
+#-- Create Storage Container Level SAS Key
+data "azurerm_storage_account_blob_container_sas" "azfinsim_appdata" {
+  connection_string = azurerm_storage_account.azfinsim.primary_connection_string
+  container_name    = azurerm_storage_container.azfinsim_appdata.name
+  https_only        = true
+
+  #ip_address = "X.X.X.X"
+
+  start  = "2021-01-01"
+  expiry = "2025-01-01"
+
+  permissions {
+    read   = true
+    add    = true
+    create = true
+    write  = true
+    delete = true
+    list   = true
+  }
+}
+
 # nfsblob storage for application access
 # see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account
 # nfsblob has interdependent sets of values, e.g. either ...
