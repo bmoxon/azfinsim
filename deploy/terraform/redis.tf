@@ -5,7 +5,7 @@
 
 # NOTE: the Name used for Redis needs to be globally unique
 resource "azurerm_redis_cache" "azfinsim" {
-  count               = local.dbg-noredis ? 0 : 1
+  count               = local.inc-redis ? 1 : 0
   name                = format("%scache", var.prefix)
   resource_group_name = azurerm_resource_group.azfinsim.name
   location            = azurerm_resource_group.azfinsim.location

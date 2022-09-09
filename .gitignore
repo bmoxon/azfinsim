@@ -2,5 +2,7 @@ deploy/terraform/.terraform.lock.hcl
 deploy/terraform/.terraform/
 deploy/terraform/terraform.tfstate
 deploy/terraform/terraform.tfstate.backup
-config/
+logs/init-hn.log
+config/azfinsim.config
 run/src/__pycache__/
+.vscode/

@@ -5,8 +5,11 @@
 import argparse
 import time
 import sys
+import os
 import logging
 import pandas as pd
+
+from pathlib import Path
 
 from applicationinsights import TelemetryClient
 from applicationinsights.logging import LoggingHandler

@@ -69,6 +69,37 @@ output "sas_url_query_string" {
   value               = data.azurerm_storage_account_blob_container_sas.azfinsim.sas
   sensitive            = true
 }
+output "appdata_container_name" {
+  value     = azurerm_storage_container.azfinsim_appdata.name
+  sensitive = false
+}
+#-- container sas key
+output "appdata_sas_url_query_string" {
+  value               = data.azurerm_storage_account_blob_container_sas.azfinsim_appdata.sas
+  sensitive            = true
+}
+
+output "xnfs_primary_blob_endpoint" {
+  value     = local.inc-xnfs ? azurerm_storage_account.azfinsimxnfs[0].primary_blob_endpoint : null
+  sensitive = false
+}
+output "xnfs_primary_blob_connection_string" {
+  value     = local.inc-xnfs ? azurerm_storage_account.azfinsimxnfs[0].primary_connection_string : null
+  sensitive = true
+}
+output "xnfs_storage_account_name" {
+  value     = local.inc-xnfs ? azurerm_storage_account.azfinsimxnfs[0].name : null
+  sensitive = false
+}
+output "xnfs_container_name" {
+  value     = local.inc-xnfs ? azurerm_storage_container.azfinsimxnfs[0].name : null
+  sensitive = false
+}
+#-- container sas key
+output "xnfs_sas_url_query_string" {
+  value     = local.inc-xnfs ? data.azurerm_storage_account_blob_container_sas.azfinsimxnfs[0].sas : null
+  sensitive = true
+}
 
 #-- container registry
 output "azcr_username" {
@@ -82,11 +113,11 @@ output "azcr_server" {
 
 #-- redis 
 output "redis_hostname" {
-  value     = local.dbg-noredis ? null : azurerm_redis_cache.azfinsim[0].hostname
+  value     = local.inc-redis ? azurerm_redis_cache.azfinsim[0].hostname : null
   sensitive = false
 }
 output "redis_ssl_port" {
-  value     = local.dbg-noredis ? null : azurerm_redis_cache.azfinsim[0].ssl_port
+  value     = local.inc-redis ? azurerm_redis_cache.azfinsim[0].ssl_port : null
   sensitive = false
 }
 
@@ -109,6 +140,10 @@ output "storage_sas_secret_name" {
   value         = azurerm_key_vault_secret.storage.name
   sensitive     = false
 }
+output "appdata_storage_sas_secret_name" {
+  value         = azurerm_key_vault_secret.appdata_storage.name
+  sensitive     = false
+}
 output "redis_secret_name" {
   value         = azurerm_key_vault_secret.redis.name
   sensitive     = false
@@ -117,8 +152,16 @@ output "appinsights_secret_name" {
   value         = azurerm_key_vault_secret.appinsights.name
   sensitive     = false
 }
+output "headnode_ssh_publickey_name" {
+  value         = azurerm_key_vault_secret.headnode_vm_ssh_publickey.name
+  sensitive     = false
+}
 
 #-- batch
+output "batch_account_name" {
+  value     = azurerm_batch_account.azfinsim.name
+  sensitive = false
+}
 output "batch_account_endpoint" {
   value     = azurerm_batch_account.azfinsim.account_endpoint
   sensitive = false
@@ -140,8 +183,34 @@ output "realtimestatic_pool_name" {
     sensitive = false
 }
 
-output "bastion_host" {
-    value     = azurerm_bastion_host.azfinsim
+output "headnode_vm_admin_user" {
+  value         = azurerm_linux_virtual_machine.azfinsim_headnode_vm.admin_username
+  sensitive     = false
+}
+output "headnode_vm_pubip" {
+    value     = azurerm_linux_virtual_machine.azfinsim_headnode_vm.public_ip_address
     sensitive = false
 }
+output "headnode_vm_ssh_public_key" {
+  value         = tls_private_key.azfinsim_headnode_ssh.public_key_openssh
+  sensitive     = true
+}
+output "headnode_vm_ssh_private_key" {
+  value         = tls_private_key.azfinsim_headnode_ssh.private_key_pem
+  sensitive     = true
+}
+
+# degugging .. narrow or remove
+
+#output "dbg_headnode_vm" {
+#  value         = azurerm_linux_virtual_machine.azfinsim_headnode_vm
+#  sensitive     = false
+#}
+
+#output "dbg_bastion" {
+#    value     = azurerm_bastion_host.azfinsim
+#    sensitive = false
+#}
+
+
 

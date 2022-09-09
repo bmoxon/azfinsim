@@ -15,35 +15,77 @@ fi
 
 if [ $# -ne 1 ]; then
   echo "Usage: destroy-runvm.sh <vmname>"
-  exit
+  echo "  e.g. destroy-runvm.sh vmtest-e64v3"
+  exit 1
 fi
 
 host=$1
 
-osDisk=$(az vm show -g $AZURE_RG_NAME --name ${host} --query "storageProfile.osDisk.id" --output tsv)
-pubIp=$(az network public-ip show -g ${AZURE_RG_NAME} -n ${host}PublicIP --query "id" --output tsv)
-Nic=$(az network nic show -g ${AZURE_RG_NAME} -n ${host}VMNic --query "id" --output tsv)
-Nsg=$(az network nsg show -g ${AZURE_RG_NAME} -n ${host}NSG --query "id" --output tsv)
+show_vm()
+{
+  vm_id=$(az vm show --resource-group $AZURE_RG_NAME --name $host | jq -r '.id')
+  if [ $? -ne 0 ]; then
+    echo "VM $host not found. Exiting."
+    exit 1
+  fi
 
-echo $osDisk
-echo $pubIp
-echo $Nic
-echo $Nsg
+  osdisk_id=$(az vm show --resource-group $AZURE_RG_NAME --name $host | jq -r '.storageProfile.osDisk.name')
+  nic_id=$(az network nic show --resource-group $AZURE_RG_NAME --name ${host}VMNic | jq -r '.id')
+  pubip_id=$(az network public-ip show --resource-group $AZURE_RG_NAME --name ${host}PublicIp | jq -r '.id')
+  nsg_id=$(az network nsg show --resource-group $AZURE_RG_NAME --name ${host}NSG | jq -r '.id')
 
-# delete the vm
-echo "deleting vm ${host}, then dependent resources. ^C to abort"
-az vm delete -g ${AZURE_RG_NAME} -n ${host}
+  echo "vm_id     : $vm_id"
+  echo "osdisk_id : $osdisk_id"
+  echo "nic_id    : $nic_id"
+  echo "pubip_id  : $pubip_id"
+  echo "nsg_id    : $nsg_id"
+}
 
-# os disk
-az resource delete -g ${AZURE_RG_NAME} -n ${osdisk} --yes
+destroy_vm()
+{
+  # disassociate publicip from nic
+  az network nic ip-config update --resource-group $AZURE_RG_NAME --name ipconfig${host} --nic-name ${host}VMNic --remove PublicIpAddress
 
-az network nic ip-config update \
-	--ids $Nic \
-	--remove PublicIpAddress
-  
-# network resources - Nic, NSG, PublicIP
-az resource delete --ids $pubIp
-az resource delete --ids $Nic
-az resource delete --ids $Nsg
+if [ $? -ne 0 ]; then
+    echo "error dissociating publicip from nic on $host; check portal"
+  fi
 
+  # delete the vm
+  az vm delete --ids $vm_id --yes
+  if [ $? -ne 0 ]; then
+    echo "error deleting the VM $vm_id; check portal"
+  fi
 
+  # and delete the osdisk, nic, and nsg
+
+  az disk delete --ids $nic_id --yes
+  if [ $? -ne 0 ]; then
+    echo "error deleting the NIC $nic_id; check portal"
+  fi
+
+  az network nic delete --ids $nic_id
+  if [ $? -ne 0 ]; then
+    echo "error deleting the NIC $nic_id; check portal"
+  fi
+
+  az network public-ip delete --ids $pubip_id
+  if [ $? -ne 0 ]; then
+    echo "error deleting the public ip $pubip_id; check portal"
+  fi
+
+  az network nsg delete --ids $nsg_id
+  if [ $? -ne 0 ]; then
+    echo "error deleting the NSG $nsg_id; check portal"
+  fi
+
+}
+
+deploybin=$(pwd)
+show_vm
+read -p "Are you sure you want to destroy this VM (YES/)?" RESP
+if [ "$RESP" != "YES" ]; then
+  echo "Requires a YES to confirm; quitting."
+  exit
+fi
+
+destroy_vm

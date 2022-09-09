@@ -7,7 +7,7 @@ resource "azurerm_public_ip" "azfinsim" {
 }
 
 resource "azurerm_bastion_host" "azfinsim" {
-  name                = format("%s-bastion-host", var.prefix)
+  name                = format("%s-bastion", var.prefix)
   location            = azurerm_resource_group.azfinsim.location
   resource_group_name = azurerm_resource_group.azfinsim.name
 
