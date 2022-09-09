@@ -14,14 +14,17 @@ output "application_id" {
   sensitive = false
 }
 output "sp_name" {
-  value = azuread_application.azfinsim.name
+  value = azuread_application.azfinsim.display_name
   sensitive = false
 }
 output "sp_password" {
   value = azuread_service_principal_password.azfinsim.value 
   sensitive = true
 }
-
+output "sp_password_end_date" {
+  value = azuread_service_principal_password.azfinsim.end_date 
+  sensitive = false
+}
 #-- keyvault
 output "keyvault_uri" {
   value     = azurerm_key_vault.azfinsim.vault_uri

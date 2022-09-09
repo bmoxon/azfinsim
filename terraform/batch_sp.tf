@@ -22,9 +22,16 @@ data "external" "batchservice" {
 #-- Register the application 
 resource "azuread_application" "azfinsim" {
   display_name               = "azfinsim"
-  homepage                   = "https://github.com/mkiernan/azfinsim"
-  available_to_other_tenants = false
-  oauth2_allow_implicit_flow = true
+  #homepage                   = "https://github.com/mkiernan/azfinsim"
+  web {
+    homepage_url             = "https://github.com/mkiernan/azfinsim"
+  }
+  #available_to_other_tenants = false
+  #sign_in_audience = AzureADMyOrg
+  #oauth2_allow_implicit_flow = true
+  #implicit_grant {
+  #  access_token_issuance_enabled = true
+  #}
 }
 #-- Create a service principal for Azure Batch applications to use
 resource "azuread_service_principal" "azfinsim" {
@@ -32,19 +39,19 @@ resource "azuread_service_principal" "azfinsim" {
   app_role_assignment_required    = false
   #tags                           = local.resource_tags
 }
-resource "random_password" "sp_password" {
-  length           = 32
-  special          = true
-  override_special = "?()[]"
-}
+#resource "random_password" "sp_password" {
+#  length           = 32
+#  special          = true
+#  override_special = "?()[]"
+#}
 resource "azuread_service_principal_password" "azfinsim" {
   service_principal_id = azuread_service_principal.azfinsim.id
-  value                = random_password.sp_password.result
-  end_date             = "2099-01-01T01:02:03Z"
+  #value                = random_password.sp_password.result
+  #end_date             = "2099-01-01T01:02:03Z"
   #-- ensure password doesn't change on subsequent invocations
-  lifecycle {
-    ignore_changes = [value]
-  }
+  #lifecycle {
+  #  ignore_changes = [value]
+  #}
 }
 
 #-- RBAC custom role definition for service principal
