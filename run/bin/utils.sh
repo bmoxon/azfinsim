@@ -2,7 +2,7 @@
 # Set of utilities to be included in bash scripts via source
 
 function Config {
-  CONFIG="../config/azfinsim.config"
+  CONFIG="../../config/azfinsim.config"
   if [ -f $CONFIG ]; then
     source $CONFIG
     return 0

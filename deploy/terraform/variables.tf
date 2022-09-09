@@ -26,7 +26,7 @@ variable "prefix" {
 
 variable "location" {
   description = "The Azure Region in which all resources in this example should be created."
-  default = "westus2"
+  default = "westus3"
 #  type = list(string)
   type = string
 }

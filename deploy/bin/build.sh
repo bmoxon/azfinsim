@@ -13,7 +13,7 @@ AZFINSIM_ACR_KEY=$(az keyvault secret show --name $AZFINSIM_ACR_SECRET_ID --vaul
 
 #-- And build the image directly in the container registry
 IMAGEFQ="$AZFINSIM_ACR/$AZFINSIM_ACR_REPO/$AZFINSIM_ACR_SIM"
-pushd ../src
+pushd ../../run/src
 az acr build --image $IMAGEFQ --registry $AZFINSIM_ACR --file Dockerfile.azfinsim .
 popd
 

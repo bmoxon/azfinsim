@@ -1,7 +1,7 @@
 #-- Get the objectid for the Azure Batch Service (needed for batch provider registration & keyvault access policy)
 #-- [Note however that objectid should be constant: ddbf3205-c6bd-46ae-8127-60eb93363864]
 data "external" "batchservice" {
-  program = ["az", "ad", "sp", "show", "--id", "MicrosoftAzureBatch", "--query", "{objectId:objectId, appId:appId}"]
+  program = ["az", "ad", "sp", "show", "--id", "MicrosoftAzureBatch", "--query", "{objectId:id, appId:appId}"]
 }
 
 data "azuread_client_config" "current" {}
@@ -13,14 +13,14 @@ resource "azuread_application" "azfinsim" {
     homepage_url             = "https://github.com/mkiernan/azfinsim"
   }
   # bcm azuread > 2.0
-  #owners                     = [data.azuread_client_config.current.object_id]
+  owners                     = [data.azuread_client_config.current.object_id]
   fallback_public_client_enabled = true
 }
 
 resource "azuread_service_principal" "azfinsim" {
   application_id                  = azuread_application.azfinsim.application_id
   app_role_assignment_required    = false
-  #owners                       = [data.azuread_client_config.current.object_id]
+  owners                       = [data.azuread_client_config.current.object_id]
 }
 
 resource "azuread_service_principal_password" "azfinsim" {

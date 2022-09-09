@@ -19,25 +19,39 @@ fi
 host=$1
 vmadminuser=$2
 sshkey="~/.ssh/id_rsa.pub"
+genpwd=$(openssl rand -base64 14)
+AUTHSSH=0
 
 vm=$(az vm list -g $AZURE_RG_NAME | jq -r '.[] | select(.name=="$host") | .name')
 if [ "$vm" == "$host" ]; then
   echo "$host already exists"
 else
   echo "Creating VM $host ..."
-  az vm create \
+  if [ "$AUTHSSH" == "1" ]; then
+    az vm create \
         --location $AZURE_LOCATION --resource-group $AZURE_RG_NAME \
         --name $host \
         --image UbuntuLTS \
         --public-ip-sku Standard \
         --size Standard_DS2_v2 \
         --admin-username ${vmadminuser} --ssh-key-values $sshkey
+  else
+    az vm create \
+        --location $AZURE_LOCATION --resource-group $AZURE_RG_NAME \
+        --name $host \
+        --image UbuntuLTS \
+        --public-ip-sku Standard \
+        --size Standard_DS2_v2 \
+        --admin-username ${vmadminuser} --admin-password ${genpwd}
+  fi
 fi
 
 # ToDo: really want dnsname in private dns
 
 vmip=$(az network public-ip show -n ${host}PublicIP -g $AZURE_RG_NAME | jq -r '.ipAddress')
 echo "$host publicip: ${vmip}"
+echo "vmadmin/${genpwd}"
+exit
 
 # set up the run-vm
 
