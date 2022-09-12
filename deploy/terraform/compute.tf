@@ -68,6 +68,7 @@ resource "azurerm_linux_virtual_machine" "azfinsim_headnode_vm" {
     name = "headnode-vm"
     computer_name = "headnode"
     admin_username = "azfinsim"
+    admin_password = "lcCU3Ii8GbNjUHi1bs8="
     size = var.headnode_vm_size
 
   network_interface_ids = [
@@ -87,7 +88,7 @@ resource "azurerm_linux_virtual_machine" "azfinsim_headnode_vm" {
     version   = "latest"
   }
 
-    disable_password_authentication = true
+    disable_password_authentication = false
 
     admin_ssh_key {
         username = "azfinsim"

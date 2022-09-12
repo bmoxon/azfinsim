@@ -10,6 +10,9 @@ resource "azurerm_bastion_host" "azfinsim" {
   name                = format("%s-bastion", var.prefix)
   location            = azurerm_resource_group.azfinsim.location
   resource_group_name = azurerm_resource_group.azfinsim.name
+  tags                = {
+       NRMSBastion: ""
+  }
 
   ip_configuration {
     name                 = "compute-subnet"

@@ -3,24 +3,10 @@
 CONFIGDIR="../../config"
 CONFIG=$CONFIGDIR/azfinsim.config
 
-deploy()
-{
-    autoapprove=$1
-    echo "Starting Terraform..."
-    terraform init
-    terraform plan -parallelism=30 
-
-    if [ "$autoapprove" = true  ]; then
-       terraform apply -auto-approve -parallelism=30
-    else 
-       terraform apply -parallelism=30
-    fi 
-}
-
 generate_config()
 {
     echo "Generating configuration..."
-    vars=$(terraform output -json)
+    vars=$(terraform -chdir=../terraform output -json)
 
     if [ ! -d $CONFIGDIR ]; then
        mkdir -p $CONFIGDIR
@@ -139,82 +125,4 @@ export AZFINSIM_HEADNODE_VM_PUBIP="$AZFINSIM_HEADNODE_VM_PUBIP"
 EOF
 } 
 
-check_env()
-{ 
-    for cmd in terraform jq az; do 
-       if ! command -v $cmd  &> /dev/null
-       then
-          echo "ERROR: command $cmd could not be found"
-          echo "azfinsim requires terraform, jq & azure cli to be installed." 
-          exit 1
-       fi
-    done 
-} 
-
-usage()
-{
-    echo -e "\nUsage: $(basename $0) [-auto-approve <auto approve terraform apply (default = prompt for approval)>]"
-    exit 1
-} 
-
-pemloc=~/.ssh/azfshn.pem
-user=$AZFINSIM_HEADNODE_VM_ADMINUSER
-
-get_headnode_pem()
-{
-   echo "Writing new headnode pem to ${pemloc}"
-   if [ -f ${pemloc} ]; then
-     ts=$(date +%Y%m%dT%H%M%S)
-     echo "Found existing azfshn.pem; moving to azfsnh.pem.backup.${ts}"
-     mv $pemloc $pemloc.backup.${ts}
-   fi
-   #printf "%s" $AZFINSIM_HEADNODE_VM_PEM > $pemloc
-   echo "$AZFINSIM_HEADNODE_VM_PEM" > ${pemloc}
-   chmod 400 ${pemloc}
-}
-
-prep_headnode()
-{
-   echo "Prepping headnode..."
-   user=$AZFINSIM_HEADNODE_VM_ADMINUSER
-   host=$AZFINSIM_HEADNODE_VM_PUBIP
-   ssh -o StrictHostKeyChecking=no -i ${pemloc} ${user}@${host} mkdir -p azfinsim-run/config
-   scp -o StrictHostKeyChecking=no -i ${pemloc} ${deploybin}/../../config/azfinsim.config ${user}@${host}:~/azfinsim-run/config/
-   scp -o StrictHostKeyChecking=no -i ${pemloc} ${deploybin}/init-hn.sh  ${user}@${host}:~
-   ssh -o StrictHostKeyChecking=no -i ${pemloc} ${user}@${host} chmod u+x ./init-hn.sh
-   ssh -o StrictHostKeyChecking=no -i ${pemloc} ${user}@${host} ./init-hn.sh | tee ${deploybin}/../../logs/init-hn.log
-}
-
-echo_ssh_cmd()
-{
-   echo
-   echo "To ssh to the headnode:"
-   echo "$ ssh -i ~/.ssh/azfshn.pem azfinsim@$AZFINSIM_HEADNODE_VM_PUBIP"
-}
-
-autoapprove=false
-while [[ $# -gt 0 ]]
-do
-   key="$1"
-   case $key in
-      -auto-approve)
-         autoapprove=true
-         shift;
-      ;;
-      *)
-         usage
-         shift;
-      ;;
-   esac
-done
-
-check_env
-deploybin=$(pwd)
-pushd ../terraform >/dev/null 
-deploy $autoapprove
 generate_config
-get_headnode_pem
-echo "prep_headnode may fail in MSFT VPN if NMRS policies applied before headnode prep (likely)"
-prep_headnode
-echo_ssh_cmd
-popd >/dev/null 

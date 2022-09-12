@@ -13,15 +13,15 @@ variable "deployenv" {
 }
 
 variable "flags" {
-  default = [ "redis" ] # e.g. [ "redis", "xnfs", "hpcc" ]
-  #default = null
+  #default = [ "redis" ] # e.g. [ "redis", "xnfs", "hpcc" ]
+  default = [ "redis" ]
   description = "Flags for various deployment configurations / scenarios, e.g. redis, xnfs, hpcc"
   type = list
 }
 
 #-- name of the application (resource names will all be prefixed with this string)
 variable "prefix" {
-  default = "bcmazfs"
+  default = "bcmazfscs"
   description = "Prefix to use for selected resources."
   type = string
 }
@@ -34,13 +34,13 @@ variable "location" {
 }
 
 variable "address_space" {
-  default = ["10.0.0.0/16"]
+  default = ["10.201.0.0/16"]
   description = "Batch pool VNET network address range"
   type = list
 }
 
 variable "compute_subnet_cidr" {
-  default = ["10.0.16.0/20"]
+  default = ["10.201.16.0/20"]
   description = "Batch compute subnet"
   type = list
 }
@@ -53,13 +53,13 @@ variable "compute_nhosts_max" {
 }
 
 variable "bastion_subnet_cidr" {
-  default = ["10.0.0.0/27"]
+  default = ["10.201.0.0/27"]
   description = "Bastion subnet CIDR"
   type = list
 }
 
 variable "infra_subnet_cidr" {
-  default = ["10.0.4.0/22"]
+  default = ["10.201.4.0/22"]
   description = "Batch compute subnet"
   type = list
 }

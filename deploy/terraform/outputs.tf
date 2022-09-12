@@ -187,6 +187,14 @@ output "headnode_vm_admin_user" {
   value         = azurerm_linux_virtual_machine.azfinsim_headnode_vm.admin_username
   sensitive     = false
 }
+output "headnode_vm_admin_password" {
+  value         = azurerm_linux_virtual_machine.azfinsim_headnode_vm.admin_password
+  sensitive     = true
+}
+output "headnode_vm_privateip" {
+    value     = azurerm_linux_virtual_machine.azfinsim_headnode_vm.private_ip_address
+    sensitive = false
+}
 output "headnode_vm_pubip" {
     value     = azurerm_linux_virtual_machine.azfinsim_headnode_vm.public_ip_address
     sensitive = false
@@ -204,7 +212,7 @@ output "headnode_vm_ssh_private_key" {
 
 #output "dbg_headnode_vm" {
 #  value         = azurerm_linux_virtual_machine.azfinsim_headnode_vm
-#  sensitive     = false
+#  sensitive     = true
 #}
 
 #output "dbg_bastion" {

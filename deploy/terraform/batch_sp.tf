@@ -9,8 +9,10 @@ data "azuread_client_config" "current" {}
 #-- Register the application 
 resource "azuread_application" "azfinsim" {
   display_name               = "azfinsim"
+#  display_name               = format("%s-app", var.prefix)
   web {
     homepage_url             = "https://github.com/mkiernan/azfinsim"
+#    homepage_url             = "https://github.com/bmoxon/azfinsim"
   }
   # bcm azuread > 2.0
   owners                     = [data.azuread_client_config.current.object_id]
@@ -28,6 +30,7 @@ resource "azuread_service_principal_password" "azfinsim" {
 
   lifecycle {
     ignore_changes = [value, end_date]
+    #ignore_changes = []
   }
 }
 

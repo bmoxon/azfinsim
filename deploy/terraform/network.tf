@@ -1,4 +1,5 @@
 #-- Networking
+
 resource "azurerm_virtual_network" "azfinsim" {
   name                = format("%s-vnet", var.prefix)
   address_space       = var.address_space
