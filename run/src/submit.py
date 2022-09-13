@@ -23,7 +23,7 @@ from applicationinsights.logging import LoggingHandler
 from getargs import getargs
 from config import *
 import config
-import secrets
+import azfssecrets
 import azlog 
 
 #logging.basicConfig(level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     args = getargs("submit")
 
     #-- pull keys/passwords from the keyvault
-    secrets.ReadKVSecrets()
+    azfssecrets.ReadKVSecrets()
 
     # set up logging - STDOUT
     #handler = LoggingHandler(APP_INSIGHTS_INSTRUMENTATION_KEY)
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     #],level=args.loglevel)
     #logging.info("%s" % args)
 
-    credentials = secrets.SetupAADAuth()
+    credentials = azfssecrets.SetupAADAuth()
     batch_client = batch.BatchServiceClient(credentials, batch_url=AZFINSIM_ENDPOINT)
 
     job_id = args.job_id + "-" + time.strftime("%Y%m%d-%H%M%S")

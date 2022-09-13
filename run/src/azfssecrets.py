@@ -1,3 +1,5 @@
+#import azure.batch._batch_service_client as batch
+#import azure.batch.batch_auth as batchauth
 from azure.batch import BatchServiceClient
 from azure.common.credentials import ServicePrincipalCredentials
 from azure.identity import DefaultAzureCredential
